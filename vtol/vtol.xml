@@ -1,0 +1,84 @@
+<mujoco model="VTOL">
+  <option integrator="RK4" density="1.225" viscosity="1.8e-5"/>
+  <compiler inertiafromgeom="false" meshdir="assets" autolimits="true"/>
+
+  <default>
+    <default class="VTOL">
+      <default class="visual">
+        <geom group="2" type="mesh" contype="0" conaffinity="0"/>
+      </default>
+      <default class="collision">
+        <geom group="3" type="mesh"/>
+      </default>
+      <site group="5"/>
+    </default>
+  </default>
+
+  <asset>
+    <material name="fuel" rgba="0.859375 0.6325 0.27451 1"/>
+    <material name="oxy_blue1" rgba="0.2773 0.625 0.8203 1"/>
+    <material name="oxy_blue2" rgba="0.1133 0.3555 0.8359 1"/>
+    <material name="bar" rgba="0 0 0 1"/>
+    <material name="legs" rgba="0.8984 0.8984 0.8984 1"/>
+    <material name="body" rgba="0.6602 0.6875 0.6875 1"/>
+    <material name="body_seg" rgba="0.914 0.914 0.914 1"/>  
+    <material name="connection" rgba="0.40625 0.40625 0.40625 1"/>
+    <material name="engine" rgba="0.40625 0.40625 0.40625 1"/>
+    <material name="engine_base" rgba="0.6445 0.6445 0.9336 1"/>
+
+    <mesh file="fuel.stl"/>
+    <mesh file="oxy.stl"/>
+    <mesh file="legs.stl"/>
+    <mesh file="legs_connection.stl"/>
+    <mesh file="engine.stl"/>
+    <mesh file="engine_base.stl"/>
+    <mesh file="body1.stl"/>
+    <mesh file="body2.stl"/>
+    <mesh file="body_seg1.stl"/>
+    <mesh file="body_seg2.stl"/>
+    <mesh file="body_seg3.stl"/>
+    <mesh file="main_bar.stl"/>
+    <mesh file="legs_collision.stl"/>
+    <mesh file="main_collision.stl"/>
+
+  </asset>
+
+  <worldbody>
+    <body name="VTOL" pos="-1.0 0 0.3" euler="0 0 0" childclass="VTOL">
+      <freejoint/>
+      <inertial pos="0 0 0.55" mass="20.0" diaginertia="2.88279167 2.88279167 0.13225"/>
+      <!-- <camera name="track" pos="-1 0 .5" xyaxes="0 -1 0 1 0 2" mode="trackcom"/> -->
+      <site name="imu"/>
+
+      <geom mesh="fuel" material="fuel" class="visual" pos="0 0 0.22"/>
+      <geom mesh="oxy" material="oxy_blue2" class="visual" pos="0 0 0.74"/>
+      <geom mesh="legs" material="legs" class="visual" pos="0 0 0" euler="0 0 45"/>
+      <geom mesh="legs_connection" material="connection" class="visual" pos="0 0 0" euler="0 0 45"/>
+      <geom mesh="engine" material="body_seg" class="visual" pos="0 0 0.05" euler="180 0 0"/>
+      <geom mesh="engine_base" material="engine_base" class="visual" pos="0 0 0.1" euler="180 0 45"/>
+      <geom mesh="body1" material="body_seg" class="visual" pos="0 0 0.1"/>
+      <geom mesh="body2" material="body_seg" class="visual" pos="0 0 1.01"/>
+      <geom mesh="body_seg1" material="body_seg" class="visual" pos="0 0 0.2"/>
+      <geom mesh="body_seg2" material="body_seg" class="visual" pos="0 0 0.72"/>
+      <geom mesh="body_seg3" material="body_seg" class="visual" pos="0 0 1.01" euler="180 0 0"/>
+      <geom mesh="main_bar" material="bar" class="visual" pos="0 0 0" euler="0 0 45"/>
+      <geom mesh="legs_collision" class="collision" pos="0 0 0" euler="0 0 45"/>
+      <geom mesh="main_collision" class="collision" pos="0 0 -0.1" euler="0 0 0"/>
+      <site name="engine_site"/>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <motor class="VTOL" ctrlrange="0 400" gear="0 0 1 0 0 0" site="engine_site" name="thrust_z"/>
+    <motor class="VTOL" ctrlrange="-200 200" gear="1 0 0 0 0 0" site="engine_site" name="thrust_x"/>
+    <motor class="VTOL" ctrlrange="-200 200" gear="0 1 0 0 0 0" site="engine_site" name="thrust_y"/>
+    <motor class="VTOL" ctrlrange="-100 100" gear="0 0 0 0 0 1" site="engine_site" name="RCS"/>
+  </actuator>
+
+  <sensor>
+    <gyro name="sensor_gyro" site="imu"/>
+    <accelerometer name="sensor_linear_accel" site="imu"/>
+    <framequat name="sensor_quat" objtype="site" objname="imu"/>
+  </sensor>
+
+</mujoco>
