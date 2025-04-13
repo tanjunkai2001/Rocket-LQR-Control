@@ -4,6 +4,11 @@ import numpy as np
 import quaternion
 from scipy.linalg import solve_continuous_are  # 连续系统
 
+
+import os
+scene_path = os.path.join(os.path.dirname(__file__), 'vtol', 'scene.xml')
+
+
 MASS = 20.0 # 火箭质量 20kg(假设质量不变)
 MAX_THRUST = 400.0 # 最大推力 400N
 MIN_THRUST = 0.0 # 最小推力 0N
@@ -158,7 +163,8 @@ def rocket_control_callback(m, d):
 # 加载模型函数
 def load_callback(m=None, d=None):
 	mujoco.set_mjcb_control(None)  # 清除控制回调函数
-	m = mujoco.MjModel.from_xml_path('vtol/scene.xml')
+	# m = mujoco.MjModel.from_xml_path('vtol/scene.xml')
+	m = mujoco.MjModel.from_xml_path(scene_path)
 	d = mujoco.MjData(m)
 	print("Set Control Callback")
 	if m is not None:
